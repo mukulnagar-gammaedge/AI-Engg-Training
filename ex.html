@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Streaming Chat Demo</title>
+</head>
+<body>
+  <h1>Streaming Chat</h1>
+  <form id="form">
+    <input type="text" id="messageText" autocomplete="off" />
+    <button>Send</button>
+  </form>
+  <div id="output"></div>
+
+  <script>
+    // Connect to your FastAPI WebSocket endpoint
+    const ws = new WebSocket("ws://localhost:8000/chat");
+
+    ws.onmessage = function(event) {
+      const output = document.getElementById("output");
+      // Append each token (word) as it arrives
+      const span = document.createElement("span");
+      span.textContent = event.data + " ";
+      output.appendChild(span);
+    };
+
+    document.getElementById("form").onsubmit = function(event) {
+      event.preventDefault();
+      const input = document.getElementById("messageText");
+      ws.send(input.value);
+      input.value = "";
+    };
+  </script>
+</body>
+</html>
